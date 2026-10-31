@@ -1,0 +1,21 @@
+$kind: http-request
+name: TC-11 POST /transactions zonder amount
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "{{cemId}}",
+      "toAccountId": "{{sophieId}}",
+      "currency": "EUR",
+      "description": "Dit is een overboek bericht"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("400 Bad Request", function () { pm.response.to.have.status(400); });
+    language: text/javascript
+order: 11000

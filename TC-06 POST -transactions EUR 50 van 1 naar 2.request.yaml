@@ -1,0 +1,37 @@
+$kind: http-request
+name: TC-06 POST /transactions EUR 50 van 1 naar 2
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{melvinId}}"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "1",
+      "toAccountId": "2",
+      "currency": "EUR",
+      "amount": 50,
+      "description": "Dit is een overboek bericht"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.sendRequest({
+          url: pm.variables.replaceIn("{{baseUrl}}/accounts/1"),
+          method: 'GET',
+          header: { 'X-User-Id': '1' }
+      }, function (e, r) {
+          if (r && r.json()) {
+              pm.collectionVariables.set("saldoVoor", r.json().balance);
+          }
+      });
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("200 OK of 201 Created", function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 6000

@@ -1,0 +1,25 @@
+$kind: http-request
+name: TC-07 POST /transactions bedrag hoger dan saldo
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "{{cemId}}",
+      "toAccountId": "{{sophieId}}",
+      "currency": "EUR",
+      "amount": 99999999,
+      "description": "Dit is een overboek bericht"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("400 (onvoldoende saldo)", function () {
+          pm.expect([400, 422]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 7000

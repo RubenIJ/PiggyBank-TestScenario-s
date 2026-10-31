@@ -1,0 +1,12 @@
+$kind: http-request
+name: TC-02 GET /accounts/2 zonder X-User-Id
+url: "{{baseUrl}}/accounts/2"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("401 of 403, want niet geauthenticeerd / geen eigenaar", function () {
+          pm.expect([401, 403]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 2000

@@ -1,0 +1,13 @@
+$kind: http-request
+name: "TC-04 GET /accounts met X-User-Id: 1"
+url: "{{baseUrl}}/accounts"
+method: GET
+headers:
+  X-User-Id: "{{melvinId}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200 OK", function () { pm.response.to.have.status(200); });
+      pm.test("Lijst met accounts", function () { pm.expect(pm.response.json()).to.be.an("array"); });
+    language: text/javascript
+order: 4000
