@@ -1,0 +1,19 @@
+$kind: http-request
+name: TC-16 PUT /accounts naam wijzigen
+url: "{{baseUrl}}/accounts"
+method: PUT
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "accountId": "{{cemId}}",
+      "name": "Nieuwe naam"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("200 OK", function () { pm.response.to.have.status(200); });
+    language: text/javascript
+order: 16000

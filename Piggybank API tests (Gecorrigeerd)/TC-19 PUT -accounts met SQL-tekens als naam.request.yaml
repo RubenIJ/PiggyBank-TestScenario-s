@@ -1,0 +1,19 @@
+$kind: http-request
+name: TC-19 PUT /accounts met SQL-tekens als naam
+url: "{{baseUrl}}/accounts"
+method: PUT
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "accountId": "{{cemId}}",
+      "name": "' OR 1=1 --"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("200 OK, opgeslagen als gewone tekst", function () { pm.response.to.have.status(200); });
+    language: text/javascript
+order: 19000

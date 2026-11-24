@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "{{cemId}}",
+      "toAccountId": "{{sophieId}}",
+      "currency": "EUR",
+      "amount": 1,
+      "description": "Dit is een overboek bericht"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.sendRequest({
+          url: pm.variables.replaceIn("{{baseUrl}}/accounts/{{cemId}}"),
+          method: 'GET',
+          header: { 'X-User-Id': pm.variables.replaceIn("{{cemId}}") }
+      }, function (e, r) {
+          if (r && r.json()) {
+              const saldo = r.json().balance;
+              pm.sendRequest({
+                  url: pm.variables.replaceIn("{{baseUrl}}/transactions"),
+                  method: "POST",
+                  header: { "Content-Type": "application/json", "X-User-Id": pm.variables.replaceIn("{{cemId}}") },
+                  body: { mode: "raw", raw: JSON.stringify({ fromAccountId: pm.variables.replaceIn("{{cemId}}"), toAccountId: pm.variables.replaceIn("{{sophieId}}"), amount: saldo, currency: "EUR", description: "eerste overboeking" }) }
+              }, function () {});
+          }
+      });
+    language: text/javascript
+  - type: afterResponse
+    code: pm.test("Tweede overboeking wordt geweigerd", function () { pm.expect([400, 422]).to.include(pm.response.code); });
+    language: text/javascript
+order: 20000

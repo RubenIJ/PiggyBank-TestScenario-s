@@ -1,0 +1,24 @@
+$kind: http-request
+name: TC-13 POST /transactions zonder omschrijving
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "{{cemId}}",
+      "toAccountId": "{{sophieId}}",
+      "currency": "EUR",
+      "amount": 100
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200 OK of 201 Created", function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 13000

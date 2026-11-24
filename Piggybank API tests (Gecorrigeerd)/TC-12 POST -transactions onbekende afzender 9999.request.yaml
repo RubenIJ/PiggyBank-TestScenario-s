@@ -1,0 +1,22 @@
+$kind: http-request
+name: TC-12 POST /transactions onbekende afzender 9999
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+  X-User-Id: "9999"
+body:
+  type: text
+  content: |-
+    {
+      "fromAccountId": "9999",
+      "toAccountId": "{{sophieId}}",
+      "currency": "EUR",
+      "amount": 100,
+      "description": "Dit is een overboek bericht"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("400 of 404", function () { pm.expect([400, 404]).to.include(pm.response.code); });
+    language: text/javascript
+order: 12000

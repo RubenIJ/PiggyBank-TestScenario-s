@@ -1,0 +1,11 @@
+$kind: http-request
+name: TC-03 GET /accounts/9999 met X-User-Id
+url: "{{baseUrl}}/accounts/9999"
+method: GET
+headers:
+  X-User-Id: "{{melvinId}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("404 Not Found", function () { pm.response.to.have.status(404); });
+    language: text/javascript
+order: 3000

@@ -1,0 +1,13 @@
+$kind: http-request
+name: TC-15 GET /transactions/1?limit=-1
+url: "{{baseUrl}}/transactions/1?limit=-1"
+method: GET
+headers:
+  X-User-Id: "{{melvinId}}"
+queryParams:
+  limit: "-1"
+scripts:
+  - type: afterResponse
+    code: pm.test("400 Bad Request", function () { pm.response.to.have.status(400); });
+    language: text/javascript
+order: 15000

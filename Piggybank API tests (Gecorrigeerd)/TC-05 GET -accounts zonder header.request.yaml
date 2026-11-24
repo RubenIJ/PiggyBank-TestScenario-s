@@ -1,0 +1,12 @@
+$kind: http-request
+name: TC-05 GET /accounts zonder header
+url: "{{baseUrl}}/accounts"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("400 Bad Request of 401 Unauthorized", function () {
+          pm.expect([400, 401, 403]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 5000

@@ -1,0 +1,19 @@
+$kind: http-request
+name: TC-17 PUT /accounts lege naam
+url: "{{baseUrl}}/accounts"
+method: PUT
+headers:
+  Content-Type: application/json
+  X-User-Id: "{{cemId}}"
+body:
+  type: text
+  content: |-
+    {
+      "accountId": "{{cemId}}",
+      "name": ""
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("400 Bad Request", function () { pm.response.to.have.status(400); });
+    language: text/javascript
+order: 17000
